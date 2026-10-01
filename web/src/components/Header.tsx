@@ -19,14 +19,14 @@ export default function Header({ dark, toggleDark }: Props) {
           href="https://github.com/uitm-systems/uitm-timetable"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/60 dark:bg-white/10 border border-black/10 dark:border-white/10 shadow-sm text-xs font-medium text-gray-600 dark:text-gray-300 hover:scale-105 transition-transform"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-xs font-medium text-gray-600 dark:text-gray-300 hover:scale-105 transition-transform"
         >
           <FaGithub className="w-3.5 h-3.5" />
           GitHub
         </a>
         <button
           onClick={toggleDark}
-          className="w-9 h-9 flex items-center justify-center rounded-full bg-white/60 dark:bg-white/10 border border-black/10 dark:border-white/10 shadow-sm hover:scale-105 transition-transform text-base"
+          className="w-9 h-9 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm hover:scale-105 transition-transform text-base"
           title="Toggle theme"
         >
           {dark ? "☀️" : "🌙"}

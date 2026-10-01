@@ -257,12 +257,12 @@ const FetchTimetable: React.FC<TimetableProps> = ({
               onKeyDown={(e) => { if (e.key === "Enter" && matricNumber?.trim()) { onImport?.(); setIsImportOpen(false); } }}
               placeholder="e.g. 2023123456"
               autoFocus
-              className="px-4 py-3 text-sm rounded-xl border border-gray-200 bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+              className="px-4 py-3 text-sm rounded-xl border border-gray-200 bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full"
             />
             <button
               onClick={() => { onImport?.(); setIsImportOpen(false); }}
               disabled={loadingImport || !matricNumber?.trim()}
-              className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-purple-600 text-white font-bold rounded-xl hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loadingImport ? "Loading…" : "Import Timetable"}
             </button>
@@ -279,7 +279,7 @@ const FetchTimetable: React.FC<TimetableProps> = ({
               <button onClick={() => setEditingClass(null)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
             </div>
 
-            <p className="text-sm font-semibold text-blue-500">{editingClass.subject_name || editingClass.subject_code}</p>
+            <p className="text-sm font-semibold text-purple-600">{editingClass.subject_name || editingClass.subject_code}</p>
             <p className="text-xs text-gray-400 -mt-2">Changes are saved locally only.</p>
 
             {/* Day */}
@@ -288,7 +288,7 @@ const FetchTimetable: React.FC<TimetableProps> = ({
               <select
                 value={editForm.day}
                 onChange={(e) => setEditForm((f) => ({ ...f, day: e.target.value }))}
-                className="px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/10 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/10 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
               >
                 {DAYS.map((d) => <option key={d} value={d}>{d}</option>)}
               </select>
@@ -302,7 +302,7 @@ const FetchTimetable: React.FC<TimetableProps> = ({
                   type="time"
                   value={editForm.startTime}
                   onChange={(e) => setEditForm((f) => ({ ...f, startTime: e.target.value }))}
-                  className="px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/10 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/10 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
                 />
               </div>
               <div className="flex flex-col gap-1 flex-1">
@@ -311,7 +311,7 @@ const FetchTimetable: React.FC<TimetableProps> = ({
                   type="time"
                   value={editForm.endTime}
                   onChange={(e) => setEditForm((f) => ({ ...f, endTime: e.target.value }))}
-                  className="px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/10 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/10 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
                 />
               </div>
             </div>
@@ -324,7 +324,7 @@ const FetchTimetable: React.FC<TimetableProps> = ({
                 value={editForm.venue}
                 onChange={(e) => setEditForm((f) => ({ ...f, venue: e.target.value }))}
                 placeholder="e.g. FSG BK 12A"
-                className="px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/10 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/10 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
             </div>
 
@@ -332,7 +332,7 @@ const FetchTimetable: React.FC<TimetableProps> = ({
               <button onClick={() => setEditingClass(null)} className="flex-1 py-2 text-sm rounded-xl border border-gray-200 dark:border-white/20 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 transition">
                 Cancel
               </button>
-              <button onClick={saveEdit} className="flex-1 py-2 text-sm rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition">
+              <button onClick={saveEdit} className="flex-1 py-2 text-sm rounded-xl bg-purple-600 text-white font-bold hover:bg-blue-700 transition">
                 Save Changes
               </button>
             </div>
@@ -345,12 +345,12 @@ const FetchTimetable: React.FC<TimetableProps> = ({
         <h2 className="text-3xl font-extrabold text-gray-800 dark:text-gray-100 text-center">Your Timetable</h2>
 
         <div className="flex flex-wrap justify-center gap-2">
-          <button onClick={saveAsImage} className="px-4 py-2 bg-blue-600/80 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-500 transition">
+          <button onClick={saveAsImage} className="px-4 py-2 bg-purple-600/80 text-white text-sm font-semibold rounded-lg shadow hover:bg-purple-600 transition">
             Save as Image
           </button>
 
           {onImport && (
-            <button onClick={() => setIsImportOpen(true)} className="px-4 py-2 bg-blue-600/60 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition">
+            <button onClick={() => setIsImportOpen(true)} className="px-4 py-2 bg-purple-600/60 text-white text-sm font-semibold rounded-lg shadow hover:bg-purple-600 transition">
               Import
             </button>
           )}
@@ -363,21 +363,21 @@ const FetchTimetable: React.FC<TimetableProps> = ({
 
           <button
             onClick={() => { setIsCustomizing((p) => !p); setSelectedClassForColor(null); }}
-            className="px-4 py-2 bg-white/60 dark:bg-white/10 text-gray-800 dark:text-gray-200 text-sm font-semibold rounded-lg shadow hover:bg-white/80 transition"
+            className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-gray-800 dark:text-gray-200 text-sm font-semibold rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition"
           >
             Colors
           </button>
 
           <button
             onClick={() => setIsSettingsOpen((p) => !p)}
-            className={`px-4 py-2 text-sm font-semibold rounded-lg shadow transition ${isSettingsOpen ? "bg-blue-500 text-white" : "bg-white/60 dark:bg-white/10 text-gray-800 dark:text-gray-200 hover:bg-white/80"}`}
+            className={`px-4 py-2 text-sm font-semibold rounded-lg shadow transition ${isSettingsOpen ? "bg-purple-600 text-white" : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-gray-800 dark:text-gray-200 hover:bg-slate-50 dark:hover:bg-slate-700"}`}
           >
             Settings
           </button>
 
           <button
             onClick={() => setIsThemesOpen((p) => !p)}
-            className={`px-4 py-2 text-sm font-semibold rounded-lg shadow transition ${isThemesOpen ? "bg-blue-500 text-white" : "bg-white/60 dark:bg-white/10 text-gray-800 dark:text-gray-200 hover:bg-white/80"}`}
+            className={`px-4 py-2 text-sm font-semibold rounded-lg shadow transition ${isThemesOpen ? "bg-purple-600 text-white" : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-gray-800 dark:text-gray-200 hover:bg-slate-50 dark:hover:bg-slate-700"}`}
           >
             Themes
           </button>
@@ -385,7 +385,7 @@ const FetchTimetable: React.FC<TimetableProps> = ({
           {selectedClasses.length > 0 && (
             <button
               onClick={() => setIsManageOpen((p) => !p)}
-              className={`px-4 py-2 text-sm font-semibold rounded-lg shadow transition ${isManageOpen ? "bg-blue-500 text-white" : "bg-white/60 dark:bg-white/10 text-gray-800 dark:text-gray-200 hover:bg-white/80"}`}
+              className={`px-4 py-2 text-sm font-semibold rounded-lg shadow transition ${isManageOpen ? "bg-purple-600 text-white" : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-gray-800 dark:text-gray-200 hover:bg-slate-50 dark:hover:bg-slate-700"}`}
             >
               Manage Classes
             </button>
@@ -402,7 +402,7 @@ const FetchTimetable: React.FC<TimetableProps> = ({
 
       {/* Settings Panel */}
       {isSettingsOpen && (
-        <div className="bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-xl p-5 mb-6 border border-black/10 dark:border-white/10">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 mb-6 border border-slate-200 dark:border-slate-800 shadow-sm">
           <h3 className="text-sm font-bold text-gray-700 dark:text-gray-200 mb-4">Timetable Settings</h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -447,7 +447,7 @@ const FetchTimetable: React.FC<TimetableProps> = ({
                   <button
                     key={m}
                     onClick={() => setViewMode(m)}
-                    className={`flex-1 py-1.5 text-sm rounded-lg font-medium transition ${viewMode === m ? "bg-blue-500 text-white" : "bg-white dark:bg-white/10 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/20"}`}
+                    className={`flex-1 py-1.5 text-sm rounded-lg font-medium transition ${viewMode === m ? "bg-purple-600 text-white" : "bg-white dark:bg-white/10 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/20"}`}
                   >
                     {m === "compact" ? "📐 Compact" : "🖥 Comfortable"}
                   </button>
@@ -463,7 +463,7 @@ const FetchTimetable: React.FC<TimetableProps> = ({
                   <button
                     key={s}
                     onClick={() => setFontSize(s)}
-                    className={`flex-1 py-1.5 text-sm rounded-lg font-medium transition ${fontSize === s ? "bg-blue-500 text-white" : "bg-white dark:bg-white/10 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/20"}`}
+                    className={`flex-1 py-1.5 text-sm rounded-lg font-medium transition ${fontSize === s ? "bg-purple-600 text-white" : "bg-white dark:bg-white/10 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/20"}`}
                   >
                     {s.toUpperCase()}
                   </button>
@@ -572,7 +572,7 @@ const FetchTimetable: React.FC<TimetableProps> = ({
         ];
         const DARK_BGS = ["#0c1a2e", "#0f172a", "#052e16"];
         return (
-          <div className="bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-xl p-5 mb-6 border border-black/10 dark:border-white/10">
+          <div className="bg-white dark:bg-slate-900 rounded-xl p-5 mb-6 border border-slate-200 dark:border-slate-800 shadow-sm">
             <h3 className="text-sm font-bold text-gray-700 dark:text-gray-200 mb-3">Themes</h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {ALL_TEMPLATES.map((t) => {
@@ -611,7 +611,7 @@ const FetchTimetable: React.FC<TimetableProps> = ({
 
       {/* Manage Classes Panel */}
       {isManageOpen && (
-        <div className="bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-xl p-5 mb-6 border border-black/10 dark:border-white/10">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 mb-6 border border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-gray-700 dark:text-gray-200">Manage Classes</h3>
             <span className="text-xs text-gray-400 dark:text-gray-500">Click X to remove a subject</span>

@@ -182,7 +182,7 @@ const saveAsImage = async () => {
         <div className="flex flex-wrap justify-center gap-3">
           <button
             onClick={saveAsImage}
-            className="px-5 py-2 bg-blue-600/50 text-white font-semibold rounded-lg shadow hover:bg-blue-500 transition"
+            className="px-5 py-2 bg-purple-600/50 text-white font-semibold rounded-lg shadow hover:bg-purple-600 transition"
           >
             Save as Image
           </button>
@@ -211,14 +211,14 @@ const saveAsImage = async () => {
               type="checkbox"
               name="toggleWeekend"
               onChange={(e) => setHideWeekend(e.target.checked)}
-              className="w-4 h-4 text-blue-500 border-gray-300 focus:ring-blue-500"
+              className="w-4 h-4 text-blue-500 border-gray-300 focus:ring-purple-500"
             />
             <span className="text-white font-medium">Hide weekend</span>
             <input
               type="checkbox"
               name="toggleWeekend"
               onChange={(e) => setInvert(e.target.checked)}
-              className="w-4 h-4 text-blue-500 border-gray-300 focus:ring-blue-500"
+              className="w-4 h-4 text-blue-500 border-gray-300 focus:ring-purple-500"
             />
             <span className="text-white font-medium">Invert Day and Time</span>
           </label>

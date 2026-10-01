@@ -69,7 +69,7 @@ export default function TimetableSwitcher() {
             {/* Mobile collapse toggle */}
             <button
               onClick={() => setLeftPanelOpen((p) => !p)}
-              className="lg:hidden w-full flex items-center justify-between px-4 py-2.5 bg-white/60 dark:bg-white/10 backdrop-blur-sm rounded-lg border border-white/40 dark:border-white/10 text-sm font-semibold text-gray-700 dark:text-gray-200"
+              className="lg:hidden w-full flex items-center justify-between px-4 py-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm text-sm font-semibold text-gray-700 dark:text-gray-200"
             >
               <span>Add Classes</span>
               <span className="text-gray-400">{leftPanelOpen ? "▲" : "▼"}</span>
@@ -78,7 +78,7 @@ export default function TimetableSwitcher() {
             <div className={`space-y-4 lg:block ${leftPanelOpen ? "block" : "hidden"}`}>
 
               {/* Smart Fetch — matric import */}
-              <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/40 dark:border-white/10 space-y-2">
+              <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
                 <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                   Smart Fetch
                 </p>
@@ -105,7 +105,7 @@ export default function TimetableSwitcher() {
               </div>
 
               {/* Manual add — campus / subject */}
-              <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/40 dark:border-white/10 space-y-4">
+              <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
                 <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                   Add manually
                 </p>
@@ -126,7 +126,7 @@ export default function TimetableSwitcher() {
 
               {/* Available Classes */}
               {campus && (
-                <div className="bg-white/40 dark:bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/30 dark:border-white/10">
+                <div className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
                   <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">
                     Available Classes
                   </h3>
