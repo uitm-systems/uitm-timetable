@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { FaGithub, FaHeart, FaTimes } from "react-icons/fa";
+import Link from "next/link";
 import Image from "next/image";
 
 interface Props {
@@ -125,18 +126,18 @@ export default function Header({ dark, toggleDark }: Props) {
 
       {/* Navigation Tabs */}
       <div className="flex justify-center mt-6 gap-2">
-        <a 
+        <Link 
           href="/" 
           className="px-4 py-2 rounded-lg text-sm font-semibold bg-white dark:bg-white/10 text-gray-800 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/20 transition-colors"
         >
           My Timetable
-        </a>
-        <a 
+        </Link>
+        <Link 
           href="/free-rooms" 
           className="px-4 py-2 rounded-lg text-sm font-semibold bg-white dark:bg-white/10 text-gray-800 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/20 transition-colors"
         >
           Find Free Room
-        </a>
+        </Link>
       </div>
 
     </div>
