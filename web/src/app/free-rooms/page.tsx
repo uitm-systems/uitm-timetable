@@ -10,10 +10,7 @@ export default function FreeRoomsPage() {
 
   return (
     <div className={`min-h-screen relative overflow-hidden transition-colors duration-500
-      bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-100
-      dark:from-slate-950 dark:via-[#1e1b4b] dark:to-[#312e81]`}>
-      
-      <div className="relative min-h-screen p-4 max-w-7xl mx-auto">
+      bg-gray-100 dark:bg-[#1d1d1d]"relative min-h-screen p-4 max-w-7xl mx-auto">
         <Header dark={dark} toggleDark={toggleDark} />
         
         <main className="container mx-auto px-4 py-8">

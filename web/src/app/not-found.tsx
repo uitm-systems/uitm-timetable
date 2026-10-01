@@ -32,7 +32,7 @@ export default function NotFound() {
         <img
           src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2l6dWpxcTcydTdrMHZ2ZnJlN3ZycGMyZXBsdmVmNzkxcjFwd3VxaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/f99OlzSrutL3qCi5je/giphy.gif"
           alt="lost"
-          className="w-56 h-56 object-cover rounded-2xl mx-auto shadow-xl"
+          className="w-56 h-56 object-cover rounded-none mx-auto "
         />
 
         {/* Text */}
@@ -48,7 +48,7 @@ export default function NotFound() {
         {/* CTA */}
         <Link
           href="/"
-          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors duration-200 shadow-md"
+          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-none transition-colors duration-200 "
         >
           ← Back to timetable
         </Link>

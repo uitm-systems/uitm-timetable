@@ -39,7 +39,7 @@ export default function RegisteredList({
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="bg-white/90 rounded-xl border border-gray-200 p-4"
+              className="bg-white/90 rounded-none border border-gray-200 p-4"
             >
               <div className="flex justify-between items-center mb-2">
                 <div className="h-4 bg-gray-200 rounded w-2/3"></div>
@@ -60,14 +60,14 @@ export default function RegisteredList({
           {uniqueTimetable.map((row, idx) => (
             <div
               key={idx}
-              className="bg-white/90 rounded-xl shadow-sm border border-gray-200 p-4 transition-all hover:shadow-md hover:bg-white"
+              className="bg-white/90 rounded-none  border border-gray-200 p-4 transition-all hover: hover:bg-white"
             >
               {/* Top: Subject + Code */}
               <div className="flex justify-between items-center mb-1">
                 <h4 className="font-semibold text-gray-900 text-sm sm:text-base">
                   {row.subject_code}
                 </h4>
-                <span className="text-xs font-medium bg-blue-100 text-blue-700 px-2 py-0.5 rounded-md">
+                <span className="text-xs font-medium bg-blue-100 text-blue-700 px-2 py-0.5 rounded-none">
                   {row.class_code.replace(/\*/g, "").trim()}
                 </span>
               </div>

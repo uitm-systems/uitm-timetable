@@ -8,7 +8,7 @@ export default function MaintenanceModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="bg-white dark:bg-[#0f1e3d] rounded-2xl shadow-2xl max-w-sm w-full p-6 flex flex-col items-center gap-4 text-center border border-black/10 dark:border-white/10">
+      <div className="bg-white dark:bg-[#0f1e3d] rounded-none  max-w-sm w-full p-6 flex flex-col items-center gap-4 text-center border border-black/10 dark:border-white/10">
 
         <div className="text-4xl">🔧</div>
 
@@ -19,7 +19,7 @@ export default function MaintenanceModal() {
           </p>
         </div>
 
-        <div className="w-full bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700/40 rounded-xl px-4 py-2.5 text-sm text-green-700 dark:text-green-400 text-left">
+        <div className="w-full bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700/40 rounded-none px-4 py-2.5 text-sm text-green-700 dark:text-green-400 text-left">
           ✓ <span className="font-semibold">Smart Fetch</span> is working fine — enter your matric number to load your timetable instantly.
         </div>
 
@@ -29,7 +29,7 @@ export default function MaintenanceModal() {
 
         <button
           onClick={() => setDismissed(true)}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition-colors text-sm"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-none transition-colors text-sm"
         >
           Got it, continue anyway
         </button>

@@ -40,7 +40,7 @@ export default function GroupList({
           {[1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
-              className="bg-white/70 rounded-lg p-3 border border-gray-200"
+              className="bg-white/70 rounded-none p-3 border border-gray-200"
             >
               <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
               <div className="h-3 bg-gray-200 rounded w-1/2"></div>
@@ -56,7 +56,7 @@ export default function GroupList({
             placeholder="Search class code..."
             value={searchGroup}
             onChange={(e) => setSearchGroup(e.target.value)}
-            className="w-full mb-4 p-2 rounded-md border border-gray-300 dark:border-white/20 focus:outline-none focus:ring-2 bg-white dark:bg-white/10 text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
+            className="w-full mb-4 p-2 rounded-none border border-gray-300 dark:border-white/20 focus:outline-none focus:ring-2 bg-white dark:bg-white/10 text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
           />
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {fetchGroup.length > 0 &&
@@ -77,7 +77,7 @@ export default function GroupList({
                     <div
                       key={idx}
                       onClick={() => addClass(row)}
-                      className={`p-3 rounded-lg cursor-pointer transition-all ${
+                      className={`p-3 rounded-none cursor-pointer transition-all ${
                         isSelected
                           ? "bg-green-500/20 border border-green-300/50"
                           : "bg-white/50 dark:bg-white/10 hover:bg-green-300/30 dark:hover:bg-green-400/20 border border-black/20 dark:border-white/10"

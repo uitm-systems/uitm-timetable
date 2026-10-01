@@ -88,7 +88,7 @@ export default function FreeRoomFinder() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div className="bg-white dark:bg-slate-900 rounded-none p-6 border border-gray-300 dark:border-gray-600 ">
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Find Empty Classrooms</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -97,7 +97,7 @@ export default function FreeRoomFinder() {
             <select 
               value={selectedCampus} 
               onChange={e => setSelectedCampus(e.target.value)}
-              className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-[#112952]/50 dark:border-[#2a3f65] dark:text-white"
+              className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-none focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-[#112952]/50 dark:border-[#2a3f65] dark:text-white"
             >
               <option value="">Select Campus</option>
               {campuses.map(c => (
@@ -111,7 +111,7 @@ export default function FreeRoomFinder() {
             <select 
               value={day} 
               onChange={e => setDay(e.target.value)}
-              className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-[#112952]/50 dark:border-[#2a3f65] dark:text-white"
+              className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-none focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-[#112952]/50 dark:border-[#2a3f65] dark:text-white"
             >
               {DAYS.map(d => (
                 <option key={d} value={d}>{d}</option>
@@ -124,7 +124,7 @@ export default function FreeRoomFinder() {
             <select 
               value={startTime} 
               onChange={e => setStartTime(e.target.value)}
-              className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-[#112952]/50 dark:border-[#2a3f65] dark:text-white"
+              className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-none focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-[#112952]/50 dark:border-[#2a3f65] dark:text-white"
             >
               {TIME_SLOTS.map(t => (
                 <option key={t} value={t}>{t}</option>
@@ -137,7 +137,7 @@ export default function FreeRoomFinder() {
             <select 
               value={endTime} 
               onChange={e => setEndTime(e.target.value)}
-              className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-[#112952]/50 dark:border-[#2a3f65] dark:text-white"
+              className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-none focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-[#112952]/50 dark:border-[#2a3f65] dark:text-white"
             >
               {TIME_SLOTS.map(t => (
                 <option key={t} value={t}>{t}</option>
@@ -148,7 +148,7 @@ export default function FreeRoomFinder() {
       </div>
 
       {selectedCampus && !isLoading && !error && (
-        <div className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 rounded-none p-6 border border-gray-300 dark:border-gray-600 ">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-bold text-gray-800 dark:text-white">
               Available Rooms
@@ -161,7 +161,7 @@ export default function FreeRoomFinder() {
           {freeRooms.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {freeRooms.map(room => (
-                <div key={room} className="flex items-center justify-center p-3 rounded-xl bg-gray-50 dark:bg-[#112952]/50 border border-gray-200 dark:border-[#2a3f65] text-gray-700 dark:text-gray-200 font-medium text-center hover:bg-blue-50 hover:border-blue-200 dark:hover:bg-blue-900/30 dark:hover:border-blue-700/50 transition-colors">
+                <div key={room} className="flex items-center justify-center p-3 rounded-none bg-gray-50 dark:bg-[#112952]/50 border border-gray-200 dark:border-[#2a3f65] text-gray-700 dark:text-gray-200 font-medium text-center hover:bg-blue-50 hover:border-blue-200 dark:hover:bg-blue-900/30 dark:hover:border-blue-700/50 transition-colors">
                   {room}
                 </div>
               ))}
@@ -176,7 +176,7 @@ export default function FreeRoomFinder() {
 
       {isLoading && (
         <div className="text-center py-10">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+          <div className="animate-spin rounded-none h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
           <p className="mt-4 text-gray-500">Loading rooms...</p>
         </div>
       )}

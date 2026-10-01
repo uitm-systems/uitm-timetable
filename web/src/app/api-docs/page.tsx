@@ -20,12 +20,12 @@ function Code({ children }: { children: string }) {
   const [copied, setCopied] = useState(false);
   return (
     <div className="relative group">
-      <pre className="bg-gray-900 dark:bg-black/40 text-green-300 text-sm rounded-xl p-4 overflow-x-auto leading-relaxed border border-white/5">
+      <pre className="bg-gray-900 dark:bg-black/40 text-green-300 text-sm rounded-none p-4 overflow-x-auto leading-relaxed border border-white/5">
         <code>{children}</code>
       </pre>
       <button
         onClick={() => { navigator.clipboard.writeText(children.trim()); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-        className="absolute top-3 right-3 text-xs px-2 py-1 rounded-md bg-white/10 hover:bg-white/20 text-gray-300 transition opacity-0 group-hover:opacity-100"
+        className="absolute top-3 right-3 text-xs px-2 py-1 rounded-none bg-white/10 hover:bg-white/20 text-gray-300 transition opacity-0 group-hover:opacity-100"
       >
         {copied ? "Copied!" : "Copy"}
       </button>
@@ -35,7 +35,7 @@ function Code({ children }: { children: string }) {
 
 function Badge({ color, children }: { color: string; children: string }) {
   return (
-    <span className={`inline-block text-xs font-bold px-2 py-0.5 rounded-full ${color}`}>
+    <span className={`inline-block text-xs font-bold px-2 py-0.5 rounded-none ${color}`}>
       {children}
     </span>
   );
@@ -84,7 +84,7 @@ export default function ApiDocs() {
             <span className="font-bold text-sm text-white">UiTMGetTable</span>
           </Link>
           <div className="flex items-center gap-4">
-            <span className="text-xs font-semibold text-blue-400 bg-blue-400/10 px-2.5 py-1 rounded-full border border-blue-400/20">API Docs</span>
+            <span className="text-xs font-semibold text-blue-400 bg-blue-400/10 px-2.5 py-1 rounded-none border border-blue-400/20">API Docs</span>
             <a href="https://github.com/sykrwasd/uitmgettable" target="_blank" rel="noopener noreferrer"
               className="text-xs text-gray-400 hover:text-white transition">GitHub →</a>
           </div>
@@ -105,7 +105,7 @@ export default function ApiDocs() {
               { href: "#notes", label: "Notes" },
             ].map(({ href, label }) => (
               <a key={href} href={href}
-                className="block px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition text-xs font-medium">
+                className="block px-3 py-2 rounded-none text-gray-400 hover:text-white hover:bg-white/10 transition text-xs font-medium">
                 {label}
               </a>
             ))}
@@ -134,11 +134,11 @@ export default function ApiDocs() {
               Files are scraped from iCress and updated automatically via GitHub Actions. There are two types of files:
             </p>
             <div className="grid sm:grid-cols-2 gap-4 mt-2">
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-1">
+              <div className="bg-white/5 border border-white/10 rounded-none p-4 space-y-1">
                 <div className="text-sm font-semibold text-white">Campus Timetable Files</div>
                 <div className="text-xs text-gray-400">One file per campus/faculty. Contains all subjects and class groups for that campus.</div>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-1">
+              <div className="bg-white/5 border border-white/10 rounded-none p-4 space-y-1">
                 <div className="text-sm font-semibold text-white">Class Index</div>
                 <div className="text-xs text-gray-400">Global index mapping class codes (e.g. <code className="text-blue-300">CS2593B</code>) to their subjects across all campuses.</div>
               </div>
@@ -159,7 +159,7 @@ export default function ApiDocs() {
             <div className="flex gap-2 mt-2">
               {(["timetable", "classindex"] as const).map((t) => (
                 <button key={t} onClick={() => setActiveTab(t)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-semibold transition border ${
+                  className={`px-4 py-1.5 rounded-none text-xs font-semibold transition border ${
                     activeTab === t
                       ? "bg-blue-600 border-blue-500 text-white"
                       : "bg-white/5 border-white/10 text-gray-400 hover:text-white"
@@ -170,7 +170,7 @@ export default function ApiDocs() {
             </div>
 
             {activeTab === "timetable" ? (
-              <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+              <div className="bg-white/5 border border-white/10 rounded-none overflow-hidden">
                 <div className="grid grid-cols-[1fr_1fr_2fr] text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-2 border-b border-white/10">
                   <span>File</span><span>URL</span><span>Campus</span>
                 </div>
@@ -189,7 +189,7 @@ export default function ApiDocs() {
                 </div>
               </div>
             ) : (
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-3">
+              <div className="bg-white/5 border border-white/10 rounded-none p-4 space-y-3">
                 <div>
                   <code className="text-blue-400 font-mono text-sm">class_index.json</code>
                   <span className="ml-3 text-xs text-gray-500">/timetable/class_index.json</span>
@@ -219,7 +219,7 @@ export default function ApiDocs() {
   ".ISP542": [ ... ]
 }`}</Code>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mt-2">
+            <div className="bg-white/5 border border-white/10 rounded-none overflow-hidden mt-2">
               <div className="px-4 py-3 border-b border-white/10 text-xs font-semibold text-gray-500 uppercase tracking-wider">Fields</div>
               <div className="px-4 divide-y divide-white/5">
                 <Field name="day_time" type="string" desc="Day and time range of the class session." example="MONDAY( 08:00 AM-11:00 AM )" />
@@ -232,7 +232,7 @@ export default function ApiDocs() {
               </div>
             </div>
 
-            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-4 py-3 text-sm text-yellow-300">
+            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-none px-4 py-3 text-sm text-yellow-300">
               <strong>Subject key prefix:</strong> Subject codes are prefixed with a dot (<code className="font-mono">.CSC404</code>). Strip it with <code className="font-mono text-xs bg-black/30 px-1 rounded">key.startsWith(".") ? key.slice(1) : key</code>
             </div>
           </Section>
@@ -257,7 +257,7 @@ export default function ApiDocs() {
     }
   ]
 }`}</Code>
-            <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+            <div className="bg-white/5 border border-white/10 rounded-none overflow-hidden">
               <div className="px-4 py-3 border-b border-white/10 text-xs font-semibold text-gray-500 uppercase tracking-wider">Additional Fields (vs campus file)</div>
               <div className="px-4 divide-y divide-white/5">
                 <Field name="campus" type="string" desc="Short campus code." example="B" />
@@ -314,7 +314,7 @@ const monday = Object.entries(data).flatMap(([key, classes]) =>
                 { icon: "🌐", title: "CORS", desc: "Files are served as static assets — no CORS restrictions. You can fetch directly from any browser or server." },
                 { icon: "📦", title: "Open Source", desc: "Scraper, data, and this app are all open source on GitHub. PRs welcome." },
               ].map(({ icon, title, desc }) => (
-                <div key={title} className="flex gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                <div key={title} className="flex gap-3 bg-white/5 border border-white/10 rounded-none px-4 py-3">
                   <span className="text-xl shrink-0">{icon}</span>
                   <div>
                     <div className="text-sm font-semibold text-white">{title}</div>

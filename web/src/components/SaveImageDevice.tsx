@@ -81,7 +81,7 @@ export default function SaveImageDevice({
     <>
       <button
         onClick={openModal}
-        className="px-5 py-2 bg-blue-600/50 text-white font-semibold rounded-lg shadow hover:bg-blue-500 transition"
+        className="px-5 py-2 bg-blue-600/50 text-white font-semibold rounded-none  hover:bg-blue-500 transition"
       >
         Export Timetable
       </button>

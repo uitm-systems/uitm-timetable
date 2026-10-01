@@ -54,8 +54,7 @@ export default function TimetableSwitcher() {
 
   return (
     <div className="min-h-screen relative overflow-hidden transition-colors duration-500
-      bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-100
-      dark:from-slate-950 dark:via-[#1e1b4b] dark:to-[#312e81]">
+      bg-gray-100 dark:bg-[#1d1d1d]">
       {result.result === "error" && (
         <OrderErrorPopup message={result.message} />
       )}
@@ -69,7 +68,7 @@ export default function TimetableSwitcher() {
             {/* Mobile collapse toggle */}
             <button
               onClick={() => setLeftPanelOpen((p) => !p)}
-              className="lg:hidden w-full flex items-center justify-between px-4 py-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm text-sm font-semibold text-gray-700 dark:text-gray-200"
+              className="lg:hidden w-full flex items-center justify-between px-4 py-2.5 bg-white dark:bg-slate-900 rounded-none border border-gray-300 dark:border-gray-600  text-sm font-semibold text-gray-700 dark:text-gray-200"
             >
               <span>Add Classes</span>
               <span className="text-gray-400">{leftPanelOpen ? "▲" : "▼"}</span>
@@ -78,7 +77,7 @@ export default function TimetableSwitcher() {
             <div className={`space-y-4 lg:block ${leftPanelOpen ? "block" : "hidden"}`}>
 
               {/* Smart Fetch — matric import */}
-              <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+              <div className="bg-white dark:bg-slate-900 rounded-none p-5 border border-gray-300 dark:border-gray-600  space-y-2">
                 <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                   Smart Fetch
                 </p>
@@ -89,12 +88,12 @@ export default function TimetableSwitcher() {
                     onChange={(e) => setMatricNumber(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleFetch()}
                     placeholder="Enter matric number…"
-                    className="flex-1 min-w-0 text-sm px-3 py-2 rounded-lg bg-white/80 dark:bg-white/10 border border-black/10 dark:border-white/10 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="flex-1 min-w-0 text-sm px-3 py-2 rounded-none bg-white/80 dark:bg-white/10 border border-black/10 dark:border-white/10 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
                   <button
                     onClick={handleFetch}
                     disabled={loadingTimetable || !matricNumber.trim()}
-                    className="shrink-0 px-4 py-2 text-sm font-semibold bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white rounded-lg transition-colors"
+                    className="shrink-0 px-4 py-2 text-sm font-semibold bg-purple-600 hover:bg-purple-800 disabled:opacity-50 text-white rounded-none transition-colors"
                   >
                     {loadingTimetable ? "…" : "Import"}
                   </button>
@@ -105,7 +104,7 @@ export default function TimetableSwitcher() {
               </div>
 
               {/* Manual add — campus / subject */}
-              <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+              <div className="bg-white dark:bg-slate-900 rounded-none p-5 border border-gray-300 dark:border-gray-600  space-y-4">
                 <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                   Add manually
                 </p>
@@ -126,7 +125,7 @@ export default function TimetableSwitcher() {
 
               {/* Available Classes */}
               {campus && (
-                <div className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="bg-white dark:bg-slate-900 rounded-none p-6 border border-gray-300 dark:border-gray-600 ">
                   <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">
                     Available Classes
                   </h3>

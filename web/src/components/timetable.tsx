@@ -173,7 +173,7 @@ const saveAsImage = async () => {
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+    <div className="bg-white/10 backdrop-blur-sm rounded-none p-6">
       <div className="flex flex-col items-center gap-4 mb-6">
         <h2 className="text-3xl font-extrabold text-gray-800 text-center">
           Your Timetable
@@ -182,7 +182,7 @@ const saveAsImage = async () => {
         <div className="flex flex-wrap justify-center gap-3">
           <button
             onClick={saveAsImage}
-            className="px-5 py-2 bg-purple-600/50 text-white font-semibold rounded-lg shadow hover:bg-purple-600 transition"
+            className="px-5 py-2 bg-purple-600/50 text-white font-semibold rounded-none  hover:bg-purple-600 transition"
           >
             Save as Image
           </button>
@@ -190,7 +190,7 @@ const saveAsImage = async () => {
           {onClearAll && selectedClasses.length > 0 && (
             <button
               onClick={onClearAll}
-              className="px-5 py-2 bg-red-500/50 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
+              className="px-5 py-2 bg-red-500/50 text-white font-semibold rounded-none  hover:bg-red-600 transition"
             >
               Clear All
             </button>
@@ -201,7 +201,7 @@ const saveAsImage = async () => {
               setIsCustomizing((prev) => !prev);
               setSelectedClassForColor(null);
             }}
-            className="px-5 py-2 bg-white/50 text-gray-800 font-semibold rounded-lg shadow hover:bg-gray-100 transition"
+            className="px-5 py-2 bg-white/50 text-gray-800 font-semibold rounded-none  hover:bg-gray-100 transition"
           >
             {isCustomizing ? "Close Colors" : "Customize Colors"}
           </button>
@@ -226,12 +226,12 @@ const saveAsImage = async () => {
       </div>
 
       {isCustomizing && (
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg p-6 mb-6 shadow-lg animate-fade-in">
+        <div className="bg-white/90 backdrop-blur-sm rounded-none p-6 mb-6  animate-fade-in">
           <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">Customize Colors</h3>
           <div className="flex flex-wrap gap-2 justify-center">
              <button
                 onClick={() => setSelectedClassForColor(selectedClassForColor === "HEADER_COLOR" ? null : "HEADER_COLOR")}
-                className="px-4 py-2 rounded-full border-2 text-sm font-semibold transition-all hover:scale-105"
+                className="px-4 py-2 rounded-none border-2 text-sm font-semibold transition-all hover:scale-105"
                 style={{
                   borderColor: headerColor || DEFAULT_COLOR,
                   backgroundColor: selectedClassForColor === "HEADER_COLOR" 
@@ -246,7 +246,7 @@ const saveAsImage = async () => {
                 <button
                   key={cls.class_code}
                   onClick={() => setSelectedClassForColor(selectedClassForColor === cls.class_code ? null : cls.class_code)}
-                  className="px-4 py-2 rounded-full border-2 text-sm font-semibold transition-all hover:scale-105"
+                  className="px-4 py-2 rounded-none border-2 text-sm font-semibold transition-all hover:scale-105"
                   style={{
                     borderColor: getClassColor(cls.class_code),
                     backgroundColor: selectedClassForColor === cls.class_code 
@@ -261,13 +261,13 @@ const saveAsImage = async () => {
           </div>
 
           {selectedClassForColor && (
-             <div className="mt-8 flex flex-col items-center bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+             <div className="mt-8 flex flex-col items-center bg-gray-50/50 p-4 rounded-none border border-gray-100">
                 <p className="text-sm font-medium text-gray-600 mb-4 text-center">
                    Pick a color for <span className="font-bold">{selectedClassForColor === "HEADER_COLOR" ? "Header" : selectedClasses.find((c) => c.class_code === selectedClassForColor)?.subject_name}</span>
                 </p>
                 <SwatchesPicker
                   width={pickerWidth}
-                  className="shadow-sm"
+                  className=""
                   color={selectedClassForColor === "HEADER_COLOR" ? (headerColor || DEFAULT_COLOR) : getClassColor(selectedClassForColor)}
                   onChange={(colorResult: any) => {
                     if (selectedClassForColor === "HEADER_COLOR") {
@@ -282,7 +282,7 @@ const saveAsImage = async () => {
         </div>
       )}
 
-      <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden">
+      <div className="bg-white/90 backdrop-blur-sm rounded-none  overflow-hidden">
         <div ref={timetableRef} className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
@@ -372,7 +372,7 @@ const saveAsImage = async () => {
 
       {/* Selected Classes Summary - Only show if there are classes */}
       {selectedClasses.length > 0 && (
-        <div className="mt-6 bg-white/80 backdrop-blur-sm rounded-lg p-4">
+        <div className="mt-6 bg-white/80 backdrop-blur-sm rounded-none p-4">
           <h3 className="text-lg font-semibold text-gray-700 mb-3">
             Selected Classes ({selectedClasses.length})
           </h3>

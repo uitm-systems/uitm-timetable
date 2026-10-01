@@ -16,12 +16,12 @@ export default function TimetableFetch({
         placeholder="Enter Matric Number"
         value={matricNumber}
         onChange={(e) => setMatricNumber(e.target.value)} 
-        className="w-full mb-4 p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 bg-white text-black"
+        className="w-full mb-4 p-2 rounded-none border border-gray-300 focus:outline-none focus:ring-2 bg-white text-black"
       />
 
       <button
         onClick={onFetch} // example usage
-        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md disabled:opacity-50 transition-colors"
+        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-none disabled:opacity-50 transition-colors"
       >
         Fetch Timetable
       </button>
