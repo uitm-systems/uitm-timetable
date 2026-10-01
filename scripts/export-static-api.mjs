@@ -123,20 +123,58 @@ for (const [campusCode, courses] of Object.entries(campusData)) {
 }
 console.log(`✅ groups/ — ${totalGroupFiles} campus files (aggregated from ${totalClasses} class records)`);
 
-// ─── 4. Generate meta.json ──────────────────────────────────────────────────
+// ─── 4. Export rooms/<campus>.json (for Free Room Finder) ───────────────
+const roomsDir = path.join(OUT_DIR, 'rooms');
+fs.mkdirSync(roomsDir, { recursive: true });
+
+const allRooms = db.prepare(`
+  SELECT cmp.code as campus_code, r.name as room_name, c.day, c.start_time, c.end_time
+  FROM rooms r
+  JOIN campuses cmp ON r.campus_id = cmp.id
+  LEFT JOIN class_rooms cr ON r.id = cr.room_id
+  LEFT JOIN classes c ON cr.class_id = c.id
+  ORDER BY cmp.code, r.name, c.day_index, c.start_time
+`).all();
+
+const roomData = {};
+for (const r of allRooms) {
+  if (!roomData[r.campus_code]) roomData[r.campus_code] = {};
+  if (!roomData[r.campus_code][r.room_name]) roomData[r.campus_code][r.room_name] = [];
+  
+  if (r.day && r.start_time && r.end_time) {
+    roomData[r.campus_code][r.room_name].push({
+      day: r.day,
+      start: r.start_time,
+      end: r.end_time
+    });
+  }
+}
+
+let totalRoomFiles = 0;
+for (const [campusCode, rooms] of Object.entries(roomData)) {
+  fs.writeFileSync(
+    path.join(roomsDir, `${campusCode}.json`),
+    JSON.stringify(rooms)
+  );
+  totalRoomFiles++;
+}
+console.log(`✅ rooms/ — ${totalRoomFiles} campus files (for Free Room Finder)`);
+
+// ─── 5. Generate meta.json ──────────────────────────────────────────────────
 const meta = {
   lastUpdated: new Date().toISOString(),
   totalClasses,
   totalCampuses: campuses.length,
   totalCourseFiles,
   totalGroupFiles,
+  totalRoomFiles,
   scrapeVersion: 'v2',
 };
 fs.writeFileSync(path.join(OUT_DIR, 'meta.json'), JSON.stringify(meta, null, 2));
 console.log(`✅ meta.json — lastUpdated: ${meta.lastUpdated}`);
 
 // ─── Summary ─────────────────────────────────────────────────────────────────
-const totalFiles = 1 + 1 + totalCourseFiles + totalGroupFiles; // meta + campuses + courses + groups
-console.log(`\n🎉 Static API exported: ${totalFiles} files total (was 12,220 before aggregation)`);
+const totalFiles = 1 + 1 + totalCourseFiles + totalGroupFiles + totalRoomFiles;
+console.log(`\n🎉 Static API exported: ${totalFiles} files total`);
 
 db.close();
