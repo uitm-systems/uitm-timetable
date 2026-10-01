@@ -12,25 +12,21 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "UitmGetTable",
-  description: "Build, view and export your UiTM class timetable — fast and free.",
+  title: "UiTM Timetable",
+  description: "Advanced class scheduling and empty room finder for UiTM students.",
   icons: [
     { rel: "icon", type: "image/svg+xml", url: "/favicon.svg" },
-    { rel: "icon", type: "image/x-icon", url: "/logo-v3.ico" },
   ],
   openGraph: {
-    title: "UitmGetTable — UiTM Timetable Generator",
-    description: "Build, view and export your UiTM class timetable — fast and free.",
-    url: "https://uitmgettable.my",
-    siteName: "UitmGetTable",
-    images: [{ url: "https://uitmgettable.my/og-image.png", width: 1200, height: 630, alt: "UitmGetTable — UiTM Timetable Generator" }],
+    title: "UiTM Timetable",
+    description: "Advanced class scheduling and empty room finder for UiTM students.",
+    siteName: "UiTM Timetable",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "UitmGetTable — UiTM Timetable Generator",
-    description: "Build, view and export your UiTM class timetable — fast and free.",
-    images: ["/og-image.png"],
+    title: "UiTM Timetable",
+    description: "Advanced class scheduling and empty room finder for UiTM students.",
   },
 };
 
