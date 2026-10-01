@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Database (local only — too large for git)
+db/*.sqlite
+db/*.sqlite-journal
+db/*.sqlite-wal
+
+# Next.js build output
+.next/
+out/
+
+# Environment files
+.env*
+
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts
+
+# OS files
+Thumbs.db
+.DS_Store

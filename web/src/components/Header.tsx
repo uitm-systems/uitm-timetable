@@ -1,0 +1,129 @@
+"use client";
+import { useState } from "react";
+import { FaGithub, FaHeart, FaTimes } from "react-icons/fa";
+import Image from "next/image";
+
+interface Props {
+  dark: boolean;
+  toggleDark: () => void;
+}
+
+export default function Header({ dark, toggleDark }: Props) {
+  const [showDonate, setShowDonate] = useState(false);
+
+  return (
+    <div className="mb-10">
+
+      {/* Top bar */}
+      <div className="flex justify-end items-center gap-2 mb-6">
+        <button
+          onClick={() => setShowDonate(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-700/40 shadow-sm text-xs font-medium text-pink-500 dark:text-pink-400 hover:scale-105 transition-transform"
+        >
+          <FaHeart className="w-3 h-3" />
+          Support
+        </button>
+        <a
+          href="https://github.com/sykrwasd/uitmgettable"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/60 dark:bg-white/10 border border-black/10 dark:border-white/10 shadow-sm text-xs font-medium text-gray-600 dark:text-gray-300 hover:scale-105 transition-transform"
+        >
+          <FaGithub className="w-3.5 h-3.5" />
+          GitHub
+        </a>
+        <button
+          onClick={toggleDark}
+          className="w-9 h-9 flex items-center justify-center rounded-full bg-white/60 dark:bg-white/10 border border-black/10 dark:border-white/10 shadow-sm hover:scale-105 transition-transform text-base"
+          title="Toggle theme"
+        >
+          {dark ? "☀️" : "🌙"}
+        </button>
+      </div>
+
+      {/* Donate modal */}
+      {showDonate && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          onClick={() => setShowDonate(false)}
+        >
+          <div
+            className="relative bg-white dark:bg-[#112952] rounded-2xl shadow-2xl p-6 max-w-xs w-full flex flex-col items-center gap-4"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowDonate(false)}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+            >
+              <FaTimes className="w-4 h-4" />
+            </button>
+
+            <div className="text-center">
+              <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-widest font-semibold mb-0.5">Support the dev</p>
+              <h2 className="text-lg font-black text-gray-800 dark:text-white">Scan to donate</h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">DuitNow QR · Any amount helps</p>
+            </div>
+
+            <Image
+              src="/donate-qr.jpg"
+              alt="Maybank DuitNow QR — Umar Syakir"
+              width={220}
+              height={220}
+              className="rounded-xl"
+            />
+
+            <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
+              Open your banking app and scan the QR above
+            </p>
+          </div>
+        </div>
+      )}
+
+
+      {/* Hero */}
+      <div className="text-center space-y-4">
+        <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 text-xs font-semibold px-3 py-1 rounded-full border border-blue-200 dark:border-blue-700">
+          Open Source UiTM Tool
+        </div>
+
+        <div className="flex items-center justify-center gap-4">
+          <svg width="56" height="56" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 drop-shadow-md">
+            <rect width="52" height="52" rx="12" fill="#1D4ED8" fillOpacity="0.12"/>
+            <rect x="8" y="10" width="9" height="14" rx="2.5" fill="#93C5FD"/>
+            <rect x="8" y="27" width="9" height="15" rx="2.5" fill="#BFDBFE"/>
+            <rect x="21.5" y="10" width="9" height="8" rx="2.5" fill="#1D4ED8"/>
+            <rect x="21.5" y="21.5" width="9" height="20.5" rx="2.5" fill="#3B82F6"/>
+            <rect x="35" y="10" width="9" height="20" rx="2.5" fill="#60A5FA"/>
+            <rect x="35" y="33" width="9" height="9" rx="2.5" fill="#93C5FD"/>
+          </svg>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-gray-900 dark:text-white leading-tight">
+            UiTM<span className="text-blue-500">GetTable</span>
+          </h1>
+        </div>
+
+        <p className="text-gray-500 dark:text-gray-400 text-base sm:text-lg max-w-xl mx-auto">
+          Build, view and export your UiTM class timetable — fast and free.
+        </p>
+
+        {/* Stats */}
+        <div className="flex flex-wrap justify-center gap-3 pt-1">
+          <span className="text-xs font-medium text-gray-500 dark:text-gray-400 bg-white/60 dark:bg-white/5 border border-black/10 dark:border-white/10 px-3 py-1.5 rounded-full">
+            Trusted by 20k+ students
+          </span>
+          <span className="text-xs font-medium text-gray-500 dark:text-gray-400 bg-white/60 dark:bg-white/5 border border-black/10 dark:border-white/10 px-3 py-1.5 rounded-full">
+            10k+ timetables generated
+          </span>
+        </div>
+
+        {/* Warning */}
+        <div className="max-w-2xl mx-auto mt-2">
+          <p className="text-xs text-yellow-700 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/40 rounded-lg px-4 py-2.5">
+            Always cross-check with UiTM&apos;s official timetable to avoid confusion.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  );
+}

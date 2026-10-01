@@ -1,0 +1,32 @@
+{
+  "name": "uitm-timetable",
+  "version": "1.0.0",
+  "description": "UiTM Timetable — Scraper, Database, Calendar Generator & Static API",
+  "type": "module",
+  "scripts": {
+    "scrape": "node scripts/scrape-campus.mjs",
+    "export-api": "node scripts/export-static-api.mjs",
+    "refresh": "node scripts/refresh-all.mjs",
+    "refresh:skip-scrape": "node scripts/refresh-all.mjs --skip-scrape",
+    "refresh:local": "node scripts/refresh-all.mjs --skip-push",
+    "calendar-generator": "node --env-file=.env.local scripts/generate-combined.mjs",
+    "gcal-sync": "node scripts/gcal-sync.mjs",
+    "mcp": "node src/mcp_server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.31.0",
+    "axios": "^1.20.0",
+    "axios-cookiejar-support": "^7.0.0",
+    "better-sqlite3": "^13.0.3",
+    "cheerio": "^1.2.0",
+    "dotenv": "^18.0.4",
+    "googleapis": "^182.0.0",
+    "tough-cookie": "^6.0.2"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0"
+  }
+}

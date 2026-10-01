@@ -1,0 +1,6 @@
+# Mark generated static API files so GitHub collapses diffs and excludes from stats
+web/public/api/** linguist-generated=true
+web/public/api/** -diff
+
+# Treat SQLite as binary
+db/*.sqlite binary

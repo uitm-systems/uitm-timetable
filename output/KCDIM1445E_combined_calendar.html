@@ -1,0 +1,960 @@
+
+<!DOCTYPE html>
+<html data-theme="dark">
+<head>
+  <meta charset='utf-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1' />
+  <title>KCDIM1445E — ACADEMIC SESSION I 2026/2027</title>
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+  <style>
+    :root { --bg: #1a1a2e; --surface: #16213e; --border: #2a2a4a; --text: #e8eaed; --text-muted: #9aa0a6; --today-bg: rgba(138,180,248,0.08); --btn-bg: #16213e; --btn-hover: #0f3460; --popup-bg: #16213e; --popup-border: #2a2a4a; --legend-text: #e8eaed; --timegrid-slot: #222244; --timegrid-now: #4285F4; }
+    html[data-theme="light"] { --bg: #f5f5f5; --surface: #ffffff; --border: #e0e0e0; --text: #202124; --text-muted: #5f6368; --today-bg: rgba(66,133,244,0.08); --btn-bg: #ffffff; --btn-hover: #e8eaed; --popup-bg: #ffffff; --popup-border: #e0e0e0; --legend-text: #202124; --timegrid-slot: #fafafa; --timegrid-now: #4285F4; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; background: var(--bg); color: var(--text); margin: 0; padding: 20px 10px; transition: background 0.3s, color 0.3s; }
+    .header { max-width: 1100px; margin: 0 auto 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; }
+    .header-left h1 { font-size: 1.4em; font-weight: 600; color: var(--text); margin: 0 0 4px; }
+    .header-left p { font-size: 0.9em; color: var(--text-muted); margin: 0; }
+    .header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .action-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; font-size: 0.82em; font-weight: 500; transition: all 0.2s; }
+    .action-btn:hover { background: var(--btn-hover); }
+    .action-btn svg { width: 16px; height: 16px; fill: currentColor; }
+    .legend { max-width: 1100px; margin: 0 auto 16px; padding: 10px 14px; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); display: flex; flex-wrap: wrap; align-items: center; }
+    .legend-label { color: var(--text-muted); font-size: 0.8em; margin-right: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .legend-text { color: var(--legend-text); font-size: 0.85em; }
+    #calendar { max-width: 1100px; margin: 0 auto; }
+    /* Calendar theming */
+    .fc-theme-standard td, .fc-theme-standard th { border-color: var(--border); }
+    .fc-theme-standard .fc-scrollgrid { border-color: var(--border); }
+    .fc-col-header-cell-cushion { color: var(--text-muted); text-decoration: none; font-weight: 600; text-transform: uppercase; font-size: 0.8em; }
+    .fc-daygrid-day-number { color: var(--text); text-decoration: none; }
+    .fc-day-today { background: var(--today-bg) !important; }
+    .fc-event { cursor: pointer; border-radius: 4px; padding: 1px 4px; margin-bottom: 1px; border: none; font-size: 0.8em; }
+    .fc-event-title { font-weight: 500; }
+    .fc-daygrid-event-dot { display: none; }
+    .fc-button-primary { background-color: var(--btn-bg) !important; border-color: var(--border) !important; color: var(--text) !important; font-size: 0.85em; }
+    .fc-button-primary:hover { background-color: var(--btn-hover) !important; }
+    .fc-button-active { background-color: var(--btn-hover) !important; border-color: var(--timegrid-now) !important; }
+    .fc-toolbar-title { color: var(--text); font-weight: 500; font-size: 1.3em; }
+    .fc-daygrid-day-frame { min-height: 100px; }
+    .fc-bg-event { opacity: 0.12; }
+    /* Kedah weekend: Friday & Saturday (northern Malaysian states) */
+    .fc-day-fri, .fc-day-sat { background: rgba(255,255,255,0.03); }
+    html[data-theme="light"] .fc-day-fri, html[data-theme="light"] .fc-day-sat { background: rgba(0,0,0,0.03); }
+    .fc-col-header-cell.fc-day-fri .fc-col-header-cell-cushion,
+    .fc-col-header-cell.fc-day-sat .fc-col-header-cell-cushion { color: var(--text-muted); opacity: 0.65; }
+    /* Time Grid Week View */
+    .fc-timegrid-slot { height: 40px; }
+    .fc-timegrid-slot-label-cushion { color: var(--text-muted); font-size: 0.75em; }
+    .fc-timegrid-axis-cushion { color: var(--text-muted); font-size: 0.75em; }
+    .fc-timegrid-col { background: var(--bg); }
+    .fc-timegrid-now-indicator-line { border-color: var(--timegrid-now); border-width: 2px; }
+    .fc-timegrid-now-indicator-arrow { border-color: var(--timegrid-now); }
+    .fc-timegrid-event { border-radius: 6px; border: none; font-size: 0.82em; }
+    .fc-timegrid-event .fc-event-main { padding: 4px 6px; }
+    .fc-timegrid-event .fc-event-title { font-weight: 600; }
+    .fc-timegrid-event .fc-event-time { font-size: 0.85em; opacity: 0.85; }
+    /* SweetAlert */
+    .swal2-popup { background: var(--popup-bg) !important; color: var(--text) !important; border-radius: 12px !important; border: 1px solid var(--popup-border); }
+    .swal2-title { color: var(--text) !important; }
+    .swal2-html-container { color: var(--text) !important; text-align: left !important; }
+    .swal2-confirm { background-color: #4285F4 !important; color: white !important; border-radius: 6px !important; }
+    /* Print styles */
+    @media print {
+      body { background: white !important; color: black !important; padding: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .header-actions { display: none !important; }
+      .header-left h1 { color: black !important; }
+      .header-left p { color: #555 !important; }
+      .legend { background: #f0f0f0 !important; border: 1px solid #ccc !important; }
+      .legend-text { color: black !important; }
+      .legend-label { color: #555 !important; }
+      .fc-theme-standard td, .fc-theme-standard th { border-color: #ddd !important; }
+      .fc-theme-standard .fc-scrollgrid { border-color: #ddd !important; }
+      .fc-col-header-cell-cushion { color: #333 !important; }
+      .fc-daygrid-day-number { color: #111 !important; }
+      .fc-toolbar-title { color: black !important; }
+      .fc-button-primary { display: none !important; }
+      .fc-header-toolbar { justify-content: center !important; }
+      .fc-event { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      <h1>KCDIM1445E — ACADEMIC SESSION I 2026/2027</h1>
+      <p>SEPTEMBER 2026– FEBRUARY 2027 · Campus K</p>
+    </div>
+    <div class="header-actions">
+      <button class="action-btn" id="btn-sync" title="Push automatically to Google Calendar" style="background: var(--timegrid-now); color: white; border: none;"> <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/></svg> Google Calendar Sync </button> <button class="action-btn" id="btn-gcal" title="Download .ics for Google Calendar / Outlook">
+        <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+        Export .ics
+      </button>
+      <button class="action-btn" id="btn-print" title="Print calendar">
+        <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        Print
+      </button>
+      <button class="action-btn" id="btn-theme" title="Toggle light/dark theme">
+        <svg viewBox="0 0 24 24" id="theme-icon"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
+        <span id="theme-label">Light</span>
+      </button>
+    </div>
+  </div>
+  <div class="legend">
+    <span class="legend-label">Courses:</span>
+    <span class="legend-item" style="display:inline-flex;align-items:center;margin-right:16px;margin-bottom:6px;"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#4285F4;margin-right:6px;"></span><span class="legend-text">ENT300</span></span><span class="legend-item" style="display:inline-flex;align-items:center;margin-right:16px;margin-bottom:6px;"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#EA4335;margin-right:6px;"></span><span class="legend-text">IML310</span></span><span class="legend-item" style="display:inline-flex;align-items:center;margin-right:16px;margin-bottom:6px;"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#FBBC05;margin-right:6px;"></span><span class="legend-text">IML302</span></span><span class="legend-item" style="display:inline-flex;align-items:center;margin-right:16px;margin-bottom:6px;"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#34A853;margin-right:6px;"></span><span class="legend-text">IML303</span></span><span class="legend-item" style="display:inline-flex;align-items:center;margin-right:16px;margin-bottom:6px;"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#8E24AA;margin-right:6px;"></span><span class="legend-text">IML301</span></span>
+  </div>
+  <div id='calendar'></div>
+  <script>
+    // --- Theme Toggle ---
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('cal-theme', theme);
+      document.getElementById('theme-label').textContent = theme === 'dark' ? 'Light' : 'Dark';
+      var icon = document.getElementById('theme-icon');
+      if (theme === 'light') {
+        icon.innerHTML = '<path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>';
+      } else {
+        icon.innerHTML = '<path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>';
+      }
+    }
+    var savedTheme = localStorage.getItem('cal-theme') || 'dark';
+    setTheme(savedTheme);
+    document.getElementById('btn-theme').addEventListener('click', function() {
+      var current = document.documentElement.getAttribute('data-theme');
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    // --- Print ---
+    document.getElementById('btn-print').addEventListener('click', function() {
+      window.print();
+    });
+
+    // --- Google Calendar Sync ---
+      document.getElementById('btn-sync').addEventListener('click', function() {
+        Swal.fire({
+          title: 'Google Calendar Sync',
+          html: '<p style="text-align:left; font-size: 14px;">To safely push this exact timetable directly to your Google Calendar, run the following command in your terminal:</p><pre style="background: #1e1e1e; color: #d4d4d4; padding: 10px; border-radius: 5px; text-align: left; overflow-x: auto; font-family: monospace;">npm run gcal-sync K KCDIM1445E B 20264</pre><p style="text-align:left; font-size: 13px; color: #888;">This unified script will use your local OAuth tokens to create a dedicated <b>UiTM Timetable</b> calendar, set up recurring events, skip mid-semester breaks, and attach 15-minute reminders.</p>',
+          icon: 'info',
+          confirmButtonText: 'Got it!'
+        });
+      });
+
+      // --- ICS Export ---
+    document.getElementById('btn-gcal').addEventListener('click', function() {
+      // Use template literal backticks so real newlines aren't messed up by JS parser double quotes
+      var icsText = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//UiTM Timetable//Agent//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-0@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20260927T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20260927T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-1@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261004T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20261004T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-2@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261011T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20261011T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-3@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261018T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20261018T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-4@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261025T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20261025T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-5@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261101T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20261101T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-6@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261108T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20261108T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-7@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261115T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20261115T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-8@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261122T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20261122T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-9@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261129T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20261129T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-10@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261206T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20261206T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-11@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261213T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20261213T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-12@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261227T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20261227T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-13@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20270103T140000
+DTEND;TZID=Asia/Kuala_Lumpur:20270103T160000
+SUMMARY:ENT300 - Kabin 3
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-14@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20260927T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20260927T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-15@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261004T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261004T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-16@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261011T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261011T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-17@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261018T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261018T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-18@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261025T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261025T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-19@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261101T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261101T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-20@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261108T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261108T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-21@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261115T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261115T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-22@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261122T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261122T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-23@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261129T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261129T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-24@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261206T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261206T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-25@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261213T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261213T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-26@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261227T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261227T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-27@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20270103T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20270103T180000
+SUMMARY:IML310 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-28@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20260928T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20260928T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-29@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261005T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261005T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-30@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261012T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261012T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-31@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261019T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261019T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-32@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261026T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261026T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-33@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261102T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261102T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-34@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261109T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261109T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-35@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261116T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261116T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-36@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261123T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261123T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-37@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261130T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261130T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-38@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261207T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261207T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-39@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261214T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261214T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-40@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261228T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261228T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-41@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20270104T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20270104T120000
+SUMMARY:IML302 - TEC1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-42@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20260928T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20260928T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-43@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261005T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261005T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-44@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261012T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261012T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-45@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261019T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261019T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-46@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261026T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261026T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-47@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261102T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261102T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-48@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261109T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261109T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-49@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261116T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261116T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-50@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261123T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261123T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-51@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261130T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261130T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-52@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261207T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261207T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-53@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261214T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261214T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-54@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261228T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261228T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-55@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20270104T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20270104T140000
+SUMMARY:IML303 - Dewan Sarjana 1
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-56@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20260928T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20260928T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-57@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261005T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261005T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-58@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261012T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261012T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-59@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261019T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261019T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-60@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261026T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261026T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-61@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261102T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261102T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-62@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261109T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261109T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-63@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261116T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261116T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-64@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261123T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261123T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-65@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261130T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261130T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-66@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261207T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261207T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-67@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261214T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261214T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-68@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261228T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20261228T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-69@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20270104T160000
+DTEND;TZID=Asia/Kuala_Lumpur:20270104T170000
+SUMMARY:IML302 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-70@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20260929T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20260929T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-71@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261006T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261006T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-72@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261013T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261013T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-73@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261020T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261020T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-74@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261027T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261027T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-75@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261103T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261103T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-76@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261110T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261110T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-77@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261117T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261117T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-78@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261124T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261124T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-79@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261201T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261201T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-80@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261208T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261208T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-81@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261215T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261215T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-82@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261229T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20261229T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-83@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20270105T120000
+DTEND;TZID=Asia/Kuala_Lumpur:20270105T140000
+SUMMARY:IML301 - B13
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-84@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261001T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20261001T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-85@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261008T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20261008T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-86@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261015T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20261015T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-87@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261022T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20261022T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-88@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261029T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20261029T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-89@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261105T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20261105T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-90@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261112T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20261112T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-91@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261119T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20261119T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-92@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261126T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20261126T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-93@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261203T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20261203T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-94@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261210T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20261210T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-95@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261217T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20261217T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-96@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261231T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20261231T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-97@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20270107T080000
+DTEND;TZID=Asia/Kuala_Lumpur:20270107T100000
+SUMMARY:IML301 - B16
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-98@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261001T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261001T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-99@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261008T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261008T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-100@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261015T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261015T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-101@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261022T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261022T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-102@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261029T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261029T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-103@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261105T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261105T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-104@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261112T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261112T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-105@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261119T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261119T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-106@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261126T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261126T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-107@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261203T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261203T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-108@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261210T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261210T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-109@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261217T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261217T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-110@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261231T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20261231T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-111@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20270107T100000
+DTEND;TZID=Asia/Kuala_Lumpur:20270107T110000
+SUMMARY:ENT300 - BLENDED
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-112@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261001T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20261001T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-113@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261008T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20261008T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-114@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261015T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20261015T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-115@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261022T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20261022T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-116@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261029T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20261029T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-117@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261105T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20261105T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-118@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261112T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20261112T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-119@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261119T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20261119T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-120@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261126T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20261126T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-121@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261203T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20261203T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-122@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261210T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20261210T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-123@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261217T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20261217T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-124@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20261231T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20261231T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+BEGIN:VEVENT
+UID:uitm-KCDIM1445E-125@timetable
+DTSTART;TZID=Asia/Kuala_Lumpur:20270107T110000
+DTEND;TZID=Asia/Kuala_Lumpur:20270107T120000
+SUMMARY:IML303 - C9 (Smart Classroom)
+END:VEVENT
+END:VCALENDAR`;
+      var blob = new Blob([icsText], { type: 'text/calendar;charset=utf-8' });
+      var link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'KCDIM1445E_timetable.ics';
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+
+    // --- Calendar ---
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        initialDate: '2026-09-27',
+        headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek' },
+        firstDay: 0, // Kedah: week starts on Sunday
+        nowIndicator: true,
+        // Kedah working days: Sunday–Thursday (Fri & Sat are weekend)
+        businessHours: {
+          daysOfWeek: [0, 1, 2, 3, 4], // Sun–Thu
+          startTime: '08:00',
+          endTime: '18:00'
+        },
+        eventOrder: 'order,allDay,-duration,start,title',
+        dayMaxEvents: 4,
+        moreLinkClick: 'popover',
+        slotMinTime: '07:00:00',
+        slotMaxTime: '22:00:00',
+        slotDuration: '00:30:00',
+        slotLabelInterval: '01:00:00',
+        allDaySlot: true,
+        expandRows: true,
+        fixedWeekCount: false,
+        showNonCurrentDates: false,
+        events: [{"title":"WEEK 1","start":"2026-09-27","end":"2026-10-04","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":1}},{"title":"WEEK 1","start":"2026-09-27","end":"2026-10-04","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"WEEK 2","start":"2026-10-04","end":"2026-10-11","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":2}},{"title":"WEEK 2","start":"2026-10-04","end":"2026-10-11","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"WEEK 3","start":"2026-10-11","end":"2026-10-18","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":3}},{"title":"WEEK 3","start":"2026-10-11","end":"2026-10-18","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"WEEK 4","start":"2026-10-18","end":"2026-10-25","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":4}},{"title":"WEEK 4","start":"2026-10-18","end":"2026-10-25","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"WEEK 5","start":"2026-10-25","end":"2026-11-01","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":5}},{"title":"WEEK 5","start":"2026-10-25","end":"2026-11-01","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"WEEK 6","start":"2026-11-01","end":"2026-11-08","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":6}},{"title":"WEEK 6","start":"2026-11-01","end":"2026-11-08","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"WEEK 7","start":"2026-11-08","end":"2026-11-15","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":7}},{"title":"WEEK 7","start":"2026-11-08","end":"2026-11-15","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"WEEK 8","start":"2026-11-15","end":"2026-11-22","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":8}},{"title":"WEEK 8","start":"2026-11-15","end":"2026-11-22","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"WEEK 9","start":"2026-11-22","end":"2026-11-29","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":9}},{"title":"WEEK 9","start":"2026-11-22","end":"2026-11-29","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"WEEK 10","start":"2026-11-29","end":"2026-12-06","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":10}},{"title":"WEEK 10","start":"2026-11-29","end":"2026-12-06","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"WEEK 11","start":"2026-12-06","end":"2026-12-13","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":11}},{"title":"WEEK 11","start":"2026-12-06","end":"2026-12-13","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"WEEK 12","start":"2026-12-13","end":"2026-12-20","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":12}},{"title":"WEEK 12","start":"2026-12-13","end":"2026-12-20","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"Mid-Semester Break /Special Break","start":"2026-12-20","end":"2026-12-27","color":"#ff9800","allDay":true,"order":-1,"extendedProps":{"type":"acad"}},{"title":"WEEK 13","start":"2026-12-27","end":"2027-01-03","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":13}},{"title":"WEEK 13","start":"2026-12-27","end":"2027-01-03","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"WEEK 14","start":"2027-01-03","end":"2027-01-10","display":"background","color":"#7B4B94","allDay":true,"extendedProps":{"type":"week-banner","weekNum":14}},{"title":"WEEK 14","start":"2027-01-03","end":"2027-01-10","color":"#7B4B94","allDay":true,"order":-2,"extendedProps":{"type":"acad"}},{"title":"English Exit Test (EET Speaking)","start":"2027-01-10","end":"2027-01-17","color":"#00897B","allDay":true,"order":-1,"extendedProps":{"type":"acad"}},{"title":"Revision Week","start":"2027-01-10","end":"2027-01-17","color":"#607D8B","allDay":true,"order":-1,"extendedProps":{"type":"acad"}},{"title":"Final Examination/Assessment & EET(Writing)","start":"2027-01-17","end":"2027-02-07","color":"#C62828","allDay":true,"order":-1,"extendedProps":{"type":"acad"}},{"title":"Semester Break","start":"2027-02-04","end":"2027-03-14","color":"#ff9800","allDay":true,"order":-1,"extendedProps":{"type":"acad"}},{"title":"ENT300 - Kabin 3","start":"2026-09-27T14:00:00","end":"2026-09-27T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - Kabin 3","start":"2026-10-04T14:00:00","end":"2026-10-04T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - Kabin 3","start":"2026-10-11T14:00:00","end":"2026-10-11T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - Kabin 3","start":"2026-10-18T14:00:00","end":"2026-10-18T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - Kabin 3","start":"2026-10-25T14:00:00","end":"2026-10-25T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - Kabin 3","start":"2026-11-01T14:00:00","end":"2026-11-01T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - Kabin 3","start":"2026-11-08T14:00:00","end":"2026-11-08T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - Kabin 3","start":"2026-11-15T14:00:00","end":"2026-11-15T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - Kabin 3","start":"2026-11-22T14:00:00","end":"2026-11-22T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - Kabin 3","start":"2026-11-29T14:00:00","end":"2026-11-29T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - Kabin 3","start":"2026-12-06T14:00:00","end":"2026-12-06T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - Kabin 3","start":"2026-12-13T14:00:00","end":"2026-12-13T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - Kabin 3","start":"2026-12-27T14:00:00","end":"2026-12-27T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - Kabin 3","start":"2027-01-03T14:00:00","end":"2027-01-03T16:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 14:00 – 16:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Kabin 3</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2026-09-27T16:00:00","end":"2026-09-27T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2026-10-04T16:00:00","end":"2026-10-04T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2026-10-11T16:00:00","end":"2026-10-11T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2026-10-18T16:00:00","end":"2026-10-18T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2026-10-25T16:00:00","end":"2026-10-25T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2026-11-01T16:00:00","end":"2026-11-01T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2026-11-08T16:00:00","end":"2026-11-08T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2026-11-15T16:00:00","end":"2026-11-15T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2026-11-22T16:00:00","end":"2026-11-22T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2026-11-29T16:00:00","end":"2026-11-29T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2026-12-06T16:00:00","end":"2026-12-06T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2026-12-13T16:00:00","end":"2026-12-13T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2026-12-27T16:00:00","end":"2026-12-27T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML310 - BLENDED","start":"2027-01-03T16:00:00","end":"2027-01-03T18:00:00","backgroundColor":"#EA4335","borderColor":"#EA4335","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #EA4335;\">IML310</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">SUNDAY, 16:00 – 18:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2026-09-28T10:00:00","end":"2026-09-28T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2026-10-05T10:00:00","end":"2026-10-05T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2026-10-12T10:00:00","end":"2026-10-12T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2026-10-19T10:00:00","end":"2026-10-19T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2026-10-26T10:00:00","end":"2026-10-26T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2026-11-02T10:00:00","end":"2026-11-02T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2026-11-09T10:00:00","end":"2026-11-09T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2026-11-16T10:00:00","end":"2026-11-16T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2026-11-23T10:00:00","end":"2026-11-23T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2026-11-30T10:00:00","end":"2026-11-30T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2026-12-07T10:00:00","end":"2026-12-07T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2026-12-14T10:00:00","end":"2026-12-14T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2026-12-28T10:00:00","end":"2026-12-28T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - TEC1","start":"2027-01-04T10:00:00","end":"2027-01-04T12:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 10:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">TEC1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2026-09-28T12:00:00","end":"2026-09-28T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2026-10-05T12:00:00","end":"2026-10-05T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2026-10-12T12:00:00","end":"2026-10-12T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2026-10-19T12:00:00","end":"2026-10-19T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2026-10-26T12:00:00","end":"2026-10-26T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2026-11-02T12:00:00","end":"2026-11-02T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2026-11-09T12:00:00","end":"2026-11-09T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2026-11-16T12:00:00","end":"2026-11-16T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2026-11-23T12:00:00","end":"2026-11-23T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2026-11-30T12:00:00","end":"2026-11-30T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2026-12-07T12:00:00","end":"2026-12-07T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2026-12-14T12:00:00","end":"2026-12-14T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2026-12-28T12:00:00","end":"2026-12-28T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - Dewan Sarjana 1","start":"2027-01-04T12:00:00","end":"2027-01-04T14:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">Dewan Sarjana 1</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2026-09-28T16:00:00","end":"2026-09-28T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2026-10-05T16:00:00","end":"2026-10-05T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2026-10-12T16:00:00","end":"2026-10-12T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2026-10-19T16:00:00","end":"2026-10-19T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2026-10-26T16:00:00","end":"2026-10-26T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2026-11-02T16:00:00","end":"2026-11-02T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2026-11-09T16:00:00","end":"2026-11-09T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2026-11-16T16:00:00","end":"2026-11-16T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2026-11-23T16:00:00","end":"2026-11-23T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2026-11-30T16:00:00","end":"2026-11-30T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2026-12-07T16:00:00","end":"2026-12-07T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2026-12-14T16:00:00","end":"2026-12-14T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2026-12-28T16:00:00","end":"2026-12-28T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML302 - BLENDED","start":"2027-01-04T16:00:00","end":"2027-01-04T17:00:00","backgroundColor":"#FBBC05","borderColor":"#FBBC05","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #FBBC05;\">IML302</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">MONDAY, 16:00 – 17:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2026-09-29T12:00:00","end":"2026-09-29T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2026-10-06T12:00:00","end":"2026-10-06T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2026-10-13T12:00:00","end":"2026-10-13T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2026-10-20T12:00:00","end":"2026-10-20T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2026-10-27T12:00:00","end":"2026-10-27T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2026-11-03T12:00:00","end":"2026-11-03T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2026-11-10T12:00:00","end":"2026-11-10T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2026-11-17T12:00:00","end":"2026-11-17T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2026-11-24T12:00:00","end":"2026-11-24T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2026-12-01T12:00:00","end":"2026-12-01T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2026-12-08T12:00:00","end":"2026-12-08T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2026-12-15T12:00:00","end":"2026-12-15T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2026-12-29T12:00:00","end":"2026-12-29T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B13","start":"2027-01-05T12:00:00","end":"2027-01-05T14:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">TUESDAY, 12:00 – 14:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B13</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2026-10-01T08:00:00","end":"2026-10-01T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2026-10-08T08:00:00","end":"2026-10-08T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2026-10-15T08:00:00","end":"2026-10-15T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2026-10-22T08:00:00","end":"2026-10-22T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2026-10-29T08:00:00","end":"2026-10-29T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2026-11-05T08:00:00","end":"2026-11-05T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2026-11-12T08:00:00","end":"2026-11-12T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2026-11-19T08:00:00","end":"2026-11-19T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2026-11-26T08:00:00","end":"2026-11-26T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2026-12-03T08:00:00","end":"2026-12-03T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2026-12-10T08:00:00","end":"2026-12-10T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2026-12-17T08:00:00","end":"2026-12-17T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2026-12-31T08:00:00","end":"2026-12-31T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML301 - B16","start":"2027-01-07T08:00:00","end":"2027-01-07T10:00:00","backgroundColor":"#8E24AA","borderColor":"#8E24AA","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #8E24AA;\">IML301</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 08:00 – 10:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">B16</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2026-10-01T10:00:00","end":"2026-10-01T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2026-10-08T10:00:00","end":"2026-10-08T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2026-10-15T10:00:00","end":"2026-10-15T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2026-10-22T10:00:00","end":"2026-10-22T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2026-10-29T10:00:00","end":"2026-10-29T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2026-11-05T10:00:00","end":"2026-11-05T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2026-11-12T10:00:00","end":"2026-11-12T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2026-11-19T10:00:00","end":"2026-11-19T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2026-11-26T10:00:00","end":"2026-11-26T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2026-12-03T10:00:00","end":"2026-12-03T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2026-12-10T10:00:00","end":"2026-12-10T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2026-12-17T10:00:00","end":"2026-12-17T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2026-12-31T10:00:00","end":"2026-12-31T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"ENT300 - BLENDED","start":"2027-01-07T10:00:00","end":"2027-01-07T11:00:00","backgroundColor":"#4285F4","borderColor":"#4285F4","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #4285F4;\">ENT300</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 10:00 – 11:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">BLENDED</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2026-10-01T11:00:00","end":"2026-10-01T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2026-10-08T11:00:00","end":"2026-10-08T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2026-10-15T11:00:00","end":"2026-10-15T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2026-10-22T11:00:00","end":"2026-10-22T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2026-10-29T11:00:00","end":"2026-10-29T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2026-11-05T11:00:00","end":"2026-11-05T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2026-11-12T11:00:00","end":"2026-11-12T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2026-11-19T11:00:00","end":"2026-11-19T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2026-11-26T11:00:00","end":"2026-11-26T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2026-12-03T11:00:00","end":"2026-12-03T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2026-12-10T11:00:00","end":"2026-12-10T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2026-12-17T11:00:00","end":"2026-12-17T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2026-12-31T11:00:00","end":"2026-12-31T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}},{"title":"IML303 - C9 (Smart Classroom)","start":"2027-01-07T11:00:00","end":"2027-01-07T12:00:00","backgroundColor":"#34A853","borderColor":"#34A853","extendedProps":{"description":"\n        <div style=\"font-family: sans-serif; padding: 10px;\">\n          <h3 style=\"margin:0 0 12px; color: #34A853;\">IML303</h3>\n          <table style=\"border-collapse:collapse; width:100%; font-size:0.95em;\">\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Day / Time</td><td style=\"padding:4px 8px; color:#e8eaed;\">THURSDAY, 11:00 – 12:00</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Group</td><td style=\"padding:4px 8px; color:#e8eaed;\">KCDIM1445E</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Mode</td><td style=\"padding:4px 8px; color:#e8eaed;\">BOTH - Full-time and Part-time</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Room</td><td style=\"padding:4px 8px; color:#e8eaed;\">C9 (Smart Classroom)</td></tr>\n            <tr><td style=\"padding:4px 8px; color:#9aa0a6;\">Faculty</td><td style=\"padding:4px 8px; color:#e8eaed;\">CDIM</td></tr>\n          </table>\n        </div>\n      ","type":"class"}}],
+        eventClick: function(info) {
+          if(info.event.extendedProps.type !== 'class') return;
+          Swal.fire({
+            html: info.event.extendedProps.description,
+            showCloseButton: true,
+            confirmButtonText: 'Close',
+            width: 420,
+            customClass: { popup: 'swal2-popup' }
+          });
+        },
+        eventTimeFormat: { hour: 'numeric', minute: '2-digit', meridiem: 'short' }
+      });
+      calendar.render();
+    });
+  </script>
+</body>
+</html>
+  
